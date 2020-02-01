@@ -39,6 +39,17 @@ public class Main_input : MonoBehaviour
             jump = true;
             rb.AddForce(new Vector3(0, jump_accel, 0), ForceMode2D.Impulse);
         }
+        //shoot frame updater
+        if (Input.GetKey(KeyCode.LeftArrow) && jump == false)
+        {
+            //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
+            anim.SetBool("Shooting", true);
+        }
+        if (Input.GetKeyUp(KeyCode.LeftArrow) && jump == false)
+        {
+            //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
+            anim.SetBool("Shooting", false);
+        }
     }
 
     //FIXEDUPDATE FRAMEFREE
