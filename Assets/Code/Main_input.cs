@@ -75,6 +75,7 @@ public class Main_input : MonoBehaviour
         {
             //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
             anim.SetBool("Jumping", true);
+            anim.SetBool("Jump_end", false);
             jump = true;
             charbody.AddForce(new Vector3(0, jump_accel, 0), ForceMode2D.Impulse);
         }
@@ -113,7 +114,11 @@ public class Main_input : MonoBehaviour
         //horizontal frame updater
         if (horizont != 0 && jump == false)
         {
+            anim.SetBool("Jump_end", false);
             anim.SetBool("Running", true);
+            anim.SetBool("Jump_end", true);
+            anim.SetBool("Jump_hang", false);
+            anim.SetBool("Jumping", false);
         }
         else
         {
@@ -122,10 +127,14 @@ public class Main_input : MonoBehaviour
         if (jump == true)
         {
             anim.SetBool("Jump_hang", true);
+
         }
         else
         {
+            anim.SetBool("Jump_end", false);
+            anim.SetBool("Jump_end", true);
             anim.SetBool("Jump_hang", false);
+            anim.SetBool("Jumping", false);
         }
 
         //horizontal movement updater
@@ -150,6 +159,7 @@ public class Main_input : MonoBehaviour
         if (collision.collider.tag.Equals("Terrain"))
         {
             anim.SetBool("Jump_end", true);
+            anim.SetBool("Jump_hang", false);
             anim.SetBool("Jumping", false);
             jump = false;
         }

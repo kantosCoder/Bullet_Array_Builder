@@ -4,9 +4,9 @@ using UnityEngine;
 
 public class main_projectile_behaviour : MonoBehaviour
 {
-
     public Rigidbody2D rb;
     public float projectileSpeed_def10 = 10;
+    public float flight_time = 2;
     public bool inputEnabled = true;
     private bool object_touch = false;
     private bool latest_position_left = false;
@@ -19,7 +19,6 @@ public class main_projectile_behaviour : MonoBehaviour
     private float scaleY;
     private float scaleZ;
     private GameObject thisbullet;
-    private SpriteRenderer render;
     private Animator anim;
 
     public void enabler(string facing) {
@@ -32,7 +31,7 @@ public class main_projectile_behaviour : MonoBehaviour
     void Start()
     {
         thisbullet = this.gameObject;
-        render = GetComponent<SpriteRenderer>();
+        //render = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         Debug.Log("Start" + this.gameObject.name);
@@ -51,6 +50,7 @@ public class main_projectile_behaviour : MonoBehaviour
     private void Update()
     {
         //create code to count flying frames without hitting to destroy gameobject.
+        
         if (isenabled) { 
             //control destruction of gameobject when hit.
             if (abletoexplode)
@@ -67,6 +67,13 @@ public class main_projectile_behaviour : MonoBehaviour
                 Destroy(thisbullet);
             }
 
+            //projectile flight time centineel
+            flight_time -= Time.deltaTime;
+
+            if (flight_time <= 0.0f)
+            {
+                Destroy(thisbullet);
+            }
         }
     }
 
