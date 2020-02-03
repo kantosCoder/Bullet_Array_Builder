@@ -14,10 +14,12 @@ public class Main_input : MonoBehaviour
     private float shootableframes = 2f;
     private float unshootableframes = 1f;
     private Quaternion spread;
-    private bool abletoshoot = false;
     public GameObject bullet_prefab_pointer; //drag prefab from ui... to instantiate
     public bool inputEnabled = true;
+    private bool antibounce = false;
     private bool jump = false;
+    private bool abletoshoot = false;
+    private bool upwards = false;
     private int randomizer = 0;
     private Animator anim;
     private string facing = "Right";
@@ -56,7 +58,6 @@ public class Main_input : MonoBehaviour
             {
                 abletoshoot = true;
                 unshootableframes = shoot_frames;
-
             }
         }
         if (abletoshoot)
@@ -71,7 +72,7 @@ public class Main_input : MonoBehaviour
         }
 
         //jump frame updater
-        if (Input.GetKey(KeyCode.Space) && jump == false)
+        if (Input.GetKeyDown(KeyCode.Space) && jump == false)
         {
             //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
             anim.SetBool("Jumping", true);
@@ -79,23 +80,39 @@ public class Main_input : MonoBehaviour
             jump = true;
             charbody.AddForce(new Vector3(0, jump_accel, 0), ForceMode2D.Impulse);
         }
-        //shoot frame updater
-        if (Input.GetKey(KeyCode.LeftArrow) && jump == false)
+
+            //shoot frame updater
+            if (Input.GetKey(KeyCode.LeftArrow) && jump == false)
         {
             //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
-            anim.SetBool("Shooting", true);
+            if (!upwards) { anim.SetBool("Shooting", true); }
             //GameObject bullet = Instantiate(prefabloader, transform.position, Quaternion.identity) as GameObject;
             if (abletoshoot)
             {
-                if (facing.Equals("Right"))
+                if (facing.Equals("Right")&&!upwards)
                 {
                     GameObject thisbullet = Instantiate(bullet_prefab_pointer, new Vector3(transform.position.x + 1.8f, transform.position.y, 0), Quaternion.identity);
                     thisbullet.SendMessage("enabler", facing);
                 }
-                if (facing.Equals("Left"))
+                if (facing.Equals("Left")&&!upwards)
                 {
                     GameObject thisbullet = Instantiate(bullet_prefab_pointer, new Vector3(transform.position.x - 1.5f, transform.position.y, 0), Quaternion.identity);
                     thisbullet.SendMessage("enabler", facing);
+                }
+                if (upwards) {
+                    anim.SetBool("Shooting", false);
+                    anim.SetBool("Upwards_shooting", true);
+                    //bullets fly upwards...
+                    if (facing.Equals("Left"))
+                    {
+                        GameObject thisbullet = Instantiate(bullet_prefab_pointer, new Vector3(transform.position.x+0.2f, transform.position.y + 2.2f, 0), Quaternion.identity);
+                        thisbullet.SendMessage("enabler", "Upwards");
+                    }
+                    else {
+                        GameObject thisbullet = Instantiate(bullet_prefab_pointer, new Vector3(transform.position.x-0.2f, transform.position.y + 2.2f, 0), Quaternion.identity);
+                        thisbullet.SendMessage("enabler", "Upwards");
+                    }
+                    
                 }
             }
         }
@@ -103,7 +120,7 @@ public class Main_input : MonoBehaviour
         {
             //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
             anim.SetBool("Shooting", false);
-
+            anim.SetBool("Upwards_shooting", false);
         }
     }
 
@@ -114,9 +131,7 @@ public class Main_input : MonoBehaviour
         //horizontal frame updater
         if (horizont != 0 && jump == false)
         {
-            anim.SetBool("Jump_end", false);
             anim.SetBool("Running", true);
-            anim.SetBool("Jump_end", true);
             anim.SetBool("Jump_hang", false);
             anim.SetBool("Jumping", false);
         }
@@ -131,7 +146,6 @@ public class Main_input : MonoBehaviour
         }
         else
         {
-            anim.SetBool("Jump_end", false);
             anim.SetBool("Jump_end", true);
             anim.SetBool("Jump_hang", false);
             anim.SetBool("Jumping", false);
@@ -142,15 +156,33 @@ public class Main_input : MonoBehaviour
         {
             //rb.AddForce(new Vector3(-maxVelocity, 0, 0), ForceMode2D.Impulse);
             transform.position += new Vector3(-maxVelocity, 0, 0) * Time.deltaTime;
-            transform.localScale = new Vector3(-scaleX, 3.531f, 3.531f);
+            transform.localScale = new Vector3(-scaleX, scaleY, scaleZ);
             facing = "Left";
         }
         if (Input.GetKey(KeyCode.D))
         {
             //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
             transform.position += new Vector3(maxVelocity, 0, 0) * Time.deltaTime;
-            transform.localScale = new Vector3(3.531f, 3.531f, 3.531f);
+            transform.localScale = new Vector3(scaleX, scaleY, scaleZ);
             facing = "Right";
+        }
+        //vertical aim
+        if (Input.GetKey(KeyCode.W))
+        {
+            if (facing.Equals("Left"))
+            {
+                transform.localScale = new Vector3(-scaleX, scaleY, scaleZ);
+            }
+            else {
+                transform.localScale = new Vector3(scaleX, scaleY, scaleZ);
+            }
+            anim.SetBool("Upwards", true);
+            upwards = true;
+        }
+        else {
+            anim.SetBool("Upwards_shooting",false);
+            anim.SetBool("Upwards", false);
+            upwards = false;
         }
 
     }

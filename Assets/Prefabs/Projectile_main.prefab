@@ -134,6 +134,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rb: {fileID: 0}
   projectileSpeed_def10: 10
+  flight_time: 2
   inputEnabled: 1
 --- !u!50 &6415693681397992644
 Rigidbody2D:
@@ -155,4 +156,4 @@ Rigidbody2D:
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 1
-  m_Constraints: 0
+  m_Constraints: 4
