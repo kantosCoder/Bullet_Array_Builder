@@ -26,6 +26,9 @@ TextureImporter:
   - first:
       213: -3774146255301215222
     second: Upwards_shoot3
+  - first:
+      213: 2528746330233930627
+    second: sprite_shooting 2_0
   externalObjects: {}
   serializedVersion: 10
   mipmaps:
@@ -151,7 +154,7 @@ TextureImporter:
         width: 28
         height: 58
       alignment: 9
-      pivot: {x: 0.7490267, y: 0.33496514}
+      pivot: {x: 0.7490267, y: 0.3349651}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -285,6 +288,27 @@ TextureImporter:
       bones: []
       spriteID: 1429ce25b9e12924ab2adf20c435b2af
       internalID: -3774146255301215222
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: sprite_shooting 2_0
+      rect:
+        serializedVersion: 2
+        x: 377
+        y: 838
+        width: 28
+        height: 58
+      alignment: 9
+      pivot: {x: 0.7490267, y: 0.3349651}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d1f8e597e7df91847b51ec4a5144a8d2
+      internalID: 2528746330233930627
       vertices: []
       indices: 
       edges: []

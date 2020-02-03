@@ -82,7 +82,7 @@ public class Main_input : MonoBehaviour
         }
 
             //shoot frame updater
-            if (Input.GetKey(KeyCode.LeftArrow) && jump == false)
+            if (Input.GetKey(KeyCode.LeftArrow))
         {
             //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
             if (!upwards) { anim.SetBool("Shooting", true); }

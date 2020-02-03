@@ -122,9 +122,12 @@ public class main_projectile_behaviour : MonoBehaviour
                 }
                 if (flyuptosky)
                 {
-                    rb.transform.rotation = Quaternion.Euler(Vector3.forward * 90);
+                    float Maxspread = 1.20f;
+                    float randomNumberX = Random.Range(-Maxspread, Maxspread);
+                    float randomNumberY = Random.Range(-Maxspread, Maxspread);
+                    rb.transform.rotation = Quaternion.Euler(Vector3.forward *90);
                     render.enabled = true;
-                    rb.AddForce(new Vector3(0, projectileSpeed_def10, 0), ForceMode2D.Impulse);
+                    rb.AddForce(new Vector3(randomNumberX, projectileSpeed_def10, 0), ForceMode2D.Impulse);
                 }
             }
         }
