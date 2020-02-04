@@ -7,12 +7,14 @@ public class Main_input : MonoBehaviour
     Rigidbody2D charbody;
     public float maxVelocity = 4f;
     public float jump_accel = 5;
+    public InputInterlacer touch;
     private float scaleX;
     private float scaleY;
     private float scaleZ;
-    private float shoot_frames = 0.015f;//negation frames of bullet spawning (0.025f)/0.015f
+    private float shoot_frames = 0.025f;//negation frames of bullet spawning (0.025f)/0.015f
     private float shootableframes = 2f;
     private float unshootableframes = 1f;
+    public Joystick joytarget;
     private Quaternion spread;
     public GameObject bullet_prefab_pointer; //drag prefab from ui... to instantiate
     public bool inputEnabled = true;
@@ -20,6 +22,8 @@ public class Main_input : MonoBehaviour
     private bool jump = false;
     private bool abletoshoot = false;
     private bool upwards = false;
+    private bool touchjump = false;
+    private bool touchshoot = false;
     private int randomizer = 0;
     private Animator anim;
     private string facing = "Right";
@@ -72,7 +76,7 @@ public class Main_input : MonoBehaviour
         }
 
         //jump frame updater
-        if (Input.GetKeyDown(KeyCode.Space) && jump == false)
+        if (Input.GetKeyDown(KeyCode.Space) && jump == false || (touchjump==true && jump == false))
         {
             //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
             anim.SetBool("Jumping", true);
@@ -82,7 +86,7 @@ public class Main_input : MonoBehaviour
         }
 
             //shoot frame updater
-            if (Input.GetKey(KeyCode.LeftArrow))
+            if (Input.GetKey(KeyCode.LeftArrow) || (touchshoot == true))
         {
             //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
             if (!upwards) { anim.SetBool("Shooting", true); }
@@ -127,9 +131,11 @@ public class Main_input : MonoBehaviour
     //FIXEDUPDATE FRAMEFREE
     void FixedUpdate()
     {
+        touchshoot = touch.getFirestatus();
+        touchjump = touch.getJumpStatus();
         horizont = Input.GetAxisRaw("Horizontal");
         //horizontal frame updater
-        if (horizont != 0 && jump == false)
+        if ((horizont != 0 && jump == false) || ((joytarget.Horizontal < -0.70f || joytarget.Horizontal >0.70f) && jump ==false))
         {
             anim.SetBool("Running", true);
             anim.SetBool("Jump_hang", false);
@@ -152,14 +158,14 @@ public class Main_input : MonoBehaviour
         }
 
         //horizontal movement updater
-        if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A) || (joytarget.Horizontal < -0.70f))
         {
             //rb.AddForce(new Vector3(-maxVelocity, 0, 0), ForceMode2D.Impulse);
             transform.position += new Vector3(-maxVelocity, 0, 0) * Time.deltaTime;
             transform.localScale = new Vector3(-scaleX, scaleY, scaleZ);
             facing = "Left";
         }
-        if (Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D) || joytarget.Horizontal > 0.70f)
         {
             //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
             transform.position += new Vector3(maxVelocity, 0, 0) * Time.deltaTime;
@@ -167,7 +173,7 @@ public class Main_input : MonoBehaviour
             facing = "Right";
         }
         //vertical aim
-        if (Input.GetKey(KeyCode.W))
+        if (Input.GetKey(KeyCode.W) || (joytarget.Vertical > 0.32f))
         {
             if (facing.Equals("Left"))
             {
