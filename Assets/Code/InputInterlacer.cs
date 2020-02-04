@@ -15,16 +15,12 @@ public class InputInterlacer : MonoBehaviour
     }
     //jump touch imput to interlacer
     public void jumpenable() {
-        if (!jumpispressed)
-        {
+        Debug.Log("Click boton");
             jumpinput = true;
-            jumpispressed = true;
-        }
-        
     }
     public void jumpdisable() {
+        Debug.Log("Suelto boton");
         jumpinput = false;
-        jumpispressed = false;
     }
     public bool getJumpStatus() {
         return jumpinput;

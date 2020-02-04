@@ -78,6 +78,9 @@ public class Main_input : MonoBehaviour
         //jump frame updater
         if (Input.GetKeyDown(KeyCode.Space) && jump == false || (touchjump==true && jump == false))
         {
+            if (touchjump == true) {
+                touch.jumpdisable();
+            }
             //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
             anim.SetBool("Jumping", true);
             anim.SetBool("Jump_end", false);
@@ -88,6 +91,7 @@ public class Main_input : MonoBehaviour
             //shoot frame updater
             if (Input.GetKey(KeyCode.LeftArrow) || (touchshoot == true))
         {
+            
             //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
             if (!upwards) { anim.SetBool("Shooting", true); }
             //GameObject bullet = Instantiate(prefabloader, transform.position, Quaternion.identity) as GameObject;
