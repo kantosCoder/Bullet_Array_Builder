@@ -124,7 +124,7 @@ public class Main_input : MonoBehaviour
                 }
             }
         }
-        if (Input.GetKeyUp(KeyCode.LeftArrow) && jump == false)
+        if (Input.GetKeyUp(KeyCode.LeftArrow)||touch.getFirestatus()==false)
         {
             //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
             anim.SetBool("Shooting", false);
