@@ -5,25 +5,27 @@ using UnityEngine;
 public class Main_input : MonoBehaviour
 {
     Rigidbody2D charbody;
+    public bool inputEnabled = true;
     public float maxVelocity = 4f;
     public float jump_accel = 5;
+    public Camera currentcamera;
     public InputInterlacer touch;
+    public Joystick joytarget;
+    private Quaternion spread;
+    public GameObject bullet_prefab_pointer; //drag prefab from ui... to instantiate
     private float scaleX;
     private float scaleY;
     private float scaleZ;
     private float shoot_frames = 0.025f;//negation frames of bullet spawning (0.025f)/0.015f
     private float shootableframes = 2f;
     private float unshootableframes = 1f;
-    public Joystick joytarget;
-    private Quaternion spread;
-    public GameObject bullet_prefab_pointer; //drag prefab from ui... to instantiate
-    public bool inputEnabled = true;
     private bool antibounce = false;
     private bool jump = false;
     private bool abletoshoot = false;
     private bool upwards = false;
     private bool touchjump = false;
     private bool touchshoot = false;
+    private bool hastouched = false;
     private int randomizer = 0;
     private Animator anim;
     private string facing = "Right";
@@ -86,14 +88,17 @@ public class Main_input : MonoBehaviour
             anim.SetBool("Jump_end", false);
             jump = true;
             charbody.AddForce(new Vector3(0, jump_accel, 0), ForceMode2D.Impulse);
+            currentcamera.transform.position = new Vector3(0,0,0);
         }
 
             //shoot frame updater
             if (Input.GetKey(KeyCode.LeftArrow) || (touchshoot == true))
-        {
-            
+          {
             //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
             if (!upwards) { anim.SetBool("Shooting", true); }
+            if (touchshoot) {
+                hastouched = true;
+            }
             //GameObject bullet = Instantiate(prefabloader, transform.position, Quaternion.identity) as GameObject;
             if (abletoshoot)
             {
@@ -124,11 +129,12 @@ public class Main_input : MonoBehaviour
                 }
             }
         }
-        if (Input.GetKeyUp(KeyCode.LeftArrow)||touch.getFirestatus()==false)
+        if (Input.GetKeyUp(KeyCode.LeftArrow) || (touchshoot == false && hastouched))
         {
             //rb.AddForce(new Vector3(maxVelocity, 0, 0), ForceMode2D.Impulse);
             anim.SetBool("Shooting", false);
             anim.SetBool("Upwards_shooting", false);
+            if (hastouched) { hastouched = false; }
         }
     }
 
