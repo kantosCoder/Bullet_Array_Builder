@@ -68,6 +68,7 @@
     <Compile Include="Assets\Code\JumpButton.cs" />
     <Compile Include="Assets\Code\Main_input.cs" />
     <Compile Include="Assets\Code\main_projectile_behaviour.cs" />
+    <Compile Include="Assets\Enemy_behaviour.cs" />
     <Compile Include="Assets\FireButton.cs" />
     <Compile Include="Assets\InputToScreen.cs" />
     <Compile Include="Assets\Joystick Pack\Examples\JoystickPlayerExample.cs" />

@@ -16,6 +16,7 @@ public class Main_input : MonoBehaviour
     private float scaleX;
     private float scaleY;
     private float scaleZ;
+    private float cameraoffset;
     private float shoot_frames = 0.025f;//negation frames of bullet spawning (0.025f)/0.015f
     private float shootableframes = 2f;
     private float unshootableframes = 1f;
@@ -31,11 +32,10 @@ public class Main_input : MonoBehaviour
     private string facing = "Right";
     float horizont;
 
-
-
     // Start is called before the first frame update
     void Start()
     {
+        currentcamera = Camera.main;
         shootableframes = shoot_frames;
         unshootableframes = shoot_frames;
         //getscale
@@ -88,7 +88,7 @@ public class Main_input : MonoBehaviour
             anim.SetBool("Jump_end", false);
             jump = true;
             charbody.AddForce(new Vector3(0, jump_accel, 0), ForceMode2D.Impulse);
-            currentcamera.transform.position = new Vector3(0,0,0);
+            currentcamera.transform.position = new Vector3(0,-30,0);
         }
 
             //shoot frame updater
@@ -158,7 +158,6 @@ public class Main_input : MonoBehaviour
         if (jump == true)
         {
             anim.SetBool("Jump_hang", true);
-
         }
         else
         {
@@ -166,6 +165,9 @@ public class Main_input : MonoBehaviour
             anim.SetBool("Jump_hang", false);
             anim.SetBool("Jumping", false);
         }
+
+        //camera frame information getter
+        cameraoffset = currentcamera.transform.position.y;
 
         //horizontal movement updater
         if (Input.GetKey(KeyCode.A) || (joytarget.Horizontal < -0.70f))
@@ -200,7 +202,6 @@ public class Main_input : MonoBehaviour
             anim.SetBool("Upwards", false);
             upwards = false;
         }
-
     }
     public void OnCollisionEnter2D(Collision2D collision)
     {
