@@ -141,5 +141,11 @@ public class main_projectile_behaviour : MonoBehaviour
             anim.SetBool("wall_is_hit", true);
             abletoexplode = true;
         }
+        if (collision.collider.tag.Equals("Enemy") || collision.collider.tag.Equals("Wall")) //create sprite for terrain.... and yet control them separately
+        {
+            object_touch = true;
+            anim.SetBool("enemy_is_hit", true);
+            abletoexplode = true;
+        }
     }
 }
