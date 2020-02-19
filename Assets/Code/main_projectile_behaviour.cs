@@ -5,7 +5,7 @@ using UnityEngine;
 public class main_projectile_behaviour : MonoBehaviour
 {
     public Rigidbody2D rb;
-    public float projectileSpeed_def10 = 10;
+    public float projectileSpeed_def10 = 0.25f;
     public float flight_time = 2;
     public bool inputEnabled = true;
     private bool object_touch = false;
@@ -23,6 +23,7 @@ public class main_projectile_behaviour : MonoBehaviour
     private GameObject thisbullet;
     private Animator anim;
     private Renderer render;
+    private Collider2D collider;
 
     public void enabler(string facing) {
         if (facing.Equals("Upwards")){
@@ -38,6 +39,7 @@ public class main_projectile_behaviour : MonoBehaviour
     {
         thisbullet = this.gameObject;
         render = GetComponent<SpriteRenderer>();
+        collider = GetComponent<Collider2D>();
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         Debug.Log("Start" + this.gameObject.name);
@@ -133,16 +135,25 @@ public class main_projectile_behaviour : MonoBehaviour
         }
         
     }
-    public void OnCollisionEnter2D(Collision2D collision)
+    public void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.collider.tag.Equals("Terrain")|| collision.collider.tag.Equals("Wall")) //create sprite for terrain.... and yet control them separately
+        if (collision.GetComponent<Collider2D>().tag.Equals("Terrain") || collision.GetComponent<Collider2D>().tag.Equals("Wall")) //create sprite for terrain.... and yet control them separately
         {
+            rb.constraints = RigidbodyConstraints2D.FreezePositionX;
             object_touch = true;
             anim.SetBool("wall_is_hit", true);
             abletoexplode = true;
         }
-        if (collision.collider.tag.Equals("Enemy") || collision.collider.tag.Equals("Wall")) //create sprite for terrain.... and yet control them separately
+        if (collision.GetComponent<Collider2D>().tag.Equals("Enemy")) //create sprite for terrain.... and yet control them separately
         {
+            rb.constraints = RigidbodyConstraints2D.FreezePositionX;
+            object_touch = true;
+            anim.SetBool("enemy_is_hit", true);
+            abletoexplode = true;
+        }
+        if (collision.GetComponent<Collider2D>().tag.Equals("Player")) //create sprite for terrain.... and yet control them separately
+        {
+            rb.constraints = RigidbodyConstraints2D.FreezePositionX;
             object_touch = true;
             anim.SetBool("enemy_is_hit", true);
             abletoexplode = true;

@@ -4,12 +4,17 @@ using UnityEngine;
 
 public class Enemy_behaviour : MonoBehaviour
 {
+    public GameObject bullet_prefab_pointer;
     public float patrolspeed = 1f;
     public float visionRadius = 5;
     public float attackRadius = 2;
+    private float shoot_frames = 0.1f;//negation frames of bullet spawning
+    private float nextFire = 0.0F;
     public float range = 1;
     private float leftspeed;
     private float rightspeed;
+    private bool leftshoot = false;
+    private bool rightshoot = false;
     public Transform groundetector;
     public Transform playerdetector;
     private Vector2 direction = new Vector2(1,-0.65f);
@@ -41,7 +46,7 @@ public class Enemy_behaviour : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //player positio tracker
+        //player position tracker
         playerlocation = playerdetector.transform.position;
         //patrol movemetn
         if (onpatrol)
@@ -59,7 +64,17 @@ public class Enemy_behaviour : MonoBehaviour
         {
             if (groundetect.collider.CompareTag("Wall"))
             {
-                Debug.Log("WALL DETECTED!");
+                if (facing.Equals("Right"))
+                {
+                    goLeft();
+                }
+                else if (facing.Equals("Left"))
+                {
+                    goRight();
+                }
+            }
+            else if (groundetect.collider.CompareTag("Enemy"))
+            {
                 if (facing.Equals("Right"))
                 {
                     goLeft();
@@ -72,7 +87,6 @@ public class Enemy_behaviour : MonoBehaviour
 
         }
         else {
-            Debug.Log("NOTHING DETECTED!");
             if (facing.Equals("Right"))
             {
                 goLeft();
@@ -103,27 +117,32 @@ public class Enemy_behaviour : MonoBehaviour
                     goLeft();
                     onpatrol = false;
                     anim.SetBool("Shooting", true);
+                    leftshoot = true;
                 }
                 else if (facing.Equals("Right")&&playerdistance<attackRadius) {
                     goLeft();
                     onpatrol = false;
                     anim.SetBool("Shooting", true);
-
+                    leftshoot = true;
+                        
                 }
             }
             else if (playerlocation.x > transform.position.x) {
-                goRight();
                 if (facing.Equals("Right") && onpatrol)
                 {
+                    Debug.Log("Enemy in front!");
                     goRight();
                     onpatrol = false;
                     anim.SetBool("Shooting", true);
+                    rightshoot = true;
                 }
                 else if (facing.Equals("Left") && playerdistance < attackRadius)
                 {
                     goRight();
                     onpatrol = false;
                     anim.SetBool("Shooting", true);
+                    Debug.Log("Enemy behind!");
+                    rightshoot = true;
 
                 }
             }
@@ -131,14 +150,28 @@ public class Enemy_behaviour : MonoBehaviour
         else {
             onpatrol = true;
             anim.SetBool("Shooting", false);
+            rightshoot = false;
+            leftshoot = false;
         }
+        //shoot frame updater
+        if (leftshoot && Time.time > nextFire) {
+            nextFire = Time.time + shoot_frames;
+            GameObject thisbullet = Instantiate(bullet_prefab_pointer, new Vector3(transform.position.x - 1.5f, transform.position.y, 0), Quaternion.identity);
+            thisbullet.SendMessage("enabler", facing);
+        }
+        if (rightshoot && Time.time > nextFire) {
+            nextFire = Time.time + shoot_frames;
+            GameObject thisbullet = Instantiate(bullet_prefab_pointer, new Vector3(transform.position.x + 1.8f, transform.position.y, 0), Quaternion.identity);
+            thisbullet.SendMessage("enabler", facing);
+        }
+        
     }
     private void goLeft() {
         patrolspeed = leftspeed;
         transform.localScale = new Vector3(-scaleX, scaleY, scaleZ);
         direction = new Vector2(-1, -0.65f);
         facing = "Left";
-        Debug.Log("GOING LEFT!");
+        //Debug.Log("GOING LEFT!");
     }
     private void goRight()
     {
@@ -146,7 +179,7 @@ public class Enemy_behaviour : MonoBehaviour
         transform.localScale = new Vector3(scaleX, scaleY, scaleZ);
         direction = new Vector2(1, -0.65f);
         facing = "Right";
-        Debug.Log("GOING RIGHT!");
+        //Debug.Log("GOING RIGHT!");
     }
     public void OnCollisionEnter2D(Collision2D collision)
     {

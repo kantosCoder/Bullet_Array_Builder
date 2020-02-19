@@ -8,7 +8,7 @@ public class Main_input : MonoBehaviour
     public bool inputEnabled = true;
     public float maxVelocity = 4f;
     public float jump_accel = 5;
-    public Camera currentcamera;
+    public GameObject currentcamera;
     public InputInterlacer touch;
     public Joystick joytarget;
     private Quaternion spread;
@@ -16,13 +16,11 @@ public class Main_input : MonoBehaviour
     private float scaleX;
     private float scaleY;
     private float scaleZ;
-    private float cameraoffset;
-    private float shoot_frames = 0.025f;//negation frames of bullet spawning (0.025f)/0.015f
-    private float shootableframes = 2f;
-    private float unshootableframes = 1f;
-    private bool antibounce = false;
+    //private float cameraoffset;
+    private float shoot_frames = 0.1f;//negation frames of bullet spawning
+    private float nextFire = 0.0F;
+    //private bool antibounce = false;
     private bool jump = false;
-    private bool abletoshoot = false;
     private bool upwards = false;
     private bool touchjump = false;
     private bool touchshoot = false;
@@ -35,9 +33,6 @@ public class Main_input : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        currentcamera = Camera.main;
-        shootableframes = shoot_frames;
-        unshootableframes = shoot_frames;
         //getscale
         scaleX = transform.localScale.x;
         scaleY = transform.localScale.y;
@@ -56,27 +51,6 @@ public class Main_input : MonoBehaviour
     //UPDATE//FRAME-TO-FRAME
     private void Update()
     {
-        //shoot frame controller
-        if (!abletoshoot)
-        {
-            shootableframes -= Time.deltaTime;
-            if (shootableframes <= 0.0f)
-            {
-                abletoshoot = true;
-                unshootableframes = shoot_frames;
-            }
-        }
-        if (abletoshoot)
-        {
-            unshootableframes -= Time.deltaTime;
-            if (unshootableframes <= 0.0f)
-            {
-                abletoshoot = false;
-                shootableframes = shoot_frames;
-            }
-
-        }
-
         //jump frame updater
         if (Input.GetKeyDown(KeyCode.Space) && jump == false || (touchjump==true && jump == false))
         {
@@ -100,8 +74,9 @@ public class Main_input : MonoBehaviour
                 hastouched = true;
             }
             //GameObject bullet = Instantiate(prefabloader, transform.position, Quaternion.identity) as GameObject;
-            if (abletoshoot)
+            if (Time.time > nextFire)
             {
+                nextFire = Time.time + shoot_frames;
                 if (facing.Equals("Right")&&!upwards)
                 {
                     GameObject thisbullet = Instantiate(bullet_prefab_pointer, new Vector3(transform.position.x + 1.8f, transform.position.y, 0), Quaternion.identity);
@@ -167,7 +142,7 @@ public class Main_input : MonoBehaviour
         }
 
         //camera frame information getter
-        cameraoffset = currentcamera.transform.position.y;
+        //cameraoffset = currentcamera.transform.position.y;
 
         //horizontal movement updater
         if (Input.GetKey(KeyCode.A) || (joytarget.Horizontal < -0.70f))
